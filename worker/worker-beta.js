@@ -1,5 +1,5 @@
 const authConfig = {
-    "siteName": "Rejected Drive", // Website name
+    "siteName": "Google Drive Index", // Website name
     "client_id": "58094879805-4654k2k5nqdid5bavft7fvea5u9po0t1.apps.googleusercontent.com",
     "client_secret": "ZNPZ-vS6N9Zjsyb_sNMZmXHL",
     "refresh_token": "", // Authorize token
@@ -16,13 +16,22 @@ const authConfig = {
      * No Basic Auth disk is required, just keep user and pass empty at the same time. (No need to set it directly)
      * [Note] For the disk whose id is set to the subfolder id, the search function will not be supported (it does not affect other disks).
      */
-    "roots": [{
-        "id": "",
-        "name": "Drive Index",
-        "user": "",
-        "pass": "",
-        "protect_file_link": false
-    }],
+    "roots": 
+	    [{
+            "id": "",
+            "name": "Drive One",
+            "user": "",
+            "pass": "",
+            "protect_file_link": false
+             }/**,
+             {
+            "id": "",
+            "name": "Drive Two",
+            "user": "",
+            "pass": "",
+            "protect_file_link": false
+            }*/
+            ],
     /**
      * The number displayed on each page of the file list page. [Recommended setting value is between 100 and 1000];
      * If the setting is greater than 1000, it will cause an error when requesting drive api;
@@ -52,21 +61,25 @@ const authConfig = {
  * web ui config
  */
 const uiConfig = {
-    "theme": "bhadoo_bootstrap", // Change doesn't works
-    "dark_mode": true, // switch between light or dark themes
-    "version": "2.0.7", // don't touch this one. get latest code using generator at https://github.com/ParveenBhadooOfficial/Bhadoo-Drive-Index
-    "logo_image": false, // true if you're using image link in next option.
+    "theme": "dark", 
+    "dark_mode": true, // incase you're viewing wrong colors try switching this
+    "version": "2.0.14", 
+    "logo_image": true, // true if you're using image link in next option.
     "logo_height": "", // only if logo_image is true
     "logo_width": "100px", // only if logo_image is true
-    "logo_link_name": "Rejected Drive", // if logo is true then link otherwise just text for name
+    "logo_link_name": "https://cdn.jsdelivr.net/gh/jscdn/svg@1.0.3/bhadoo-cloud-logo-white.svg", // if logo is true then link otherwise just text for name
     "contact_link": "mailto:rejectedpeice@outlook.com", // Link to Contact Button on Menu
     "copyright_year": "2077", // year of copyright, can be anything like 2015 - 2020 or just 2020
-    "company_name": "Rejected Peice", // Name next to copyright
+    "company_name": "Rejected Drive", // Name next to copyright
     "company_link": "https://github.com/Rejected-Peice", // link of copyright name
-    "credit": false,
+    "credit": true, // Set this to true to give us credit
     "display_size": true, // Set this to false to hide display file size
     "display_time": false, // Set this to false to hide display modified time for folder and files
-    "disable_player": false // Set this to true to hide audio and video players				
+    "disable_player": false, // Set this to true to hide audio and video players
+    "poster": "https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@master/images/poster.jpg", // Video poster URL or see Readme to how to load from Drive
+    "audioposter": "https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@master/images/music.jpg", // Video poster URL or see Readme to how to load from Drive
+    "jsdelivr_cdn_src": "https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer", // If Project is Forked, then enter your Github repo
+    "plyr_io_version": "3.6.4" // Change plyr.io version in future when needed.
 };
 
 /**
@@ -113,26 +126,26 @@ function html(current_drive_order = 0, model = {}) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
   <title>${authConfig.siteName}</title>
   <meta name="robots" content="noindex" />
-  <link rel="icon" href="https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@${uiConfig.version}/images/favicon.ico">
+  <link rel="icon" href="${uiConfig.jsdelivr_cdn_src}@${uiConfig.version}/images/favicon.ico">
   <script>
     window.drive_names = JSON.parse('${JSON.stringify(authConfig.roots.map(it => it.name))}');
     window.MODEL = JSON.parse('${JSON.stringify(model)}');
     window.current_drive_order = ${current_drive_order};
     window.UI = JSON.parse('${JSON.stringify(uiConfig)}');
   </script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@${uiConfig.version}/css/mdui-style.min.css">
-  <script src="https://cdn.jsdelivr.net/combine/gh/jquery/jquery@3.2/dist/jquery.min.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/3.2.4/mediaelementplayer.css" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/3.2.4/mediaelement-and-player.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@${uiConfig.version}/css/bootstrap/${uiConfig.dark_mode ? 'dark' : 'light'}.min.css">
+  <link rel="stylesheet" href="${uiConfig.jsdelivr_cdn_src}@${uiConfig.version}/css/style.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.plyr.io/${uiConfig.plyr_io_version}/plyr.css" />
+  <link rel="stylesheet" href="${uiConfig.jsdelivr_cdn_src}@${uiConfig.version}/css/bootstrap/${uiConfig.theme}/bootstrap.min.css">
   <style>${uiConfig.display_size ? '' : '.csize{display:none;}'}${uiConfig.display_time ? '' : '.cmtime{display:none;}'}</style>
-  <script src="https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@${uiConfig.version}/js/app.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@${uiConfig.version}/js/mdui.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/markdown-it@10.0.0/dist/markdown-it.min.js"></script>
+  <script src="${uiConfig.jsdelivr_cdn_src}@${uiConfig.version}/js/app.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@10.0.0/dist/markdown-it.min.js"></script>
 </head>
 <body>
 </body>
-<script src="https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@${uiConfig.version}/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.plyr.io/${uiConfig.plyr_io_version}/plyr.polyfilled.js"></script>
 </html>`;
 };
 

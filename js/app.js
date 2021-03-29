@@ -1,16 +1,28 @@
-// Initialize the page
 function init() {
     document.siteName = $('title').html();
-    var html = `
-<header >
+    var html = `<header>
    <div id="nav">
    </div>
 </header>
 <div>
 <div id="content">
 </div>
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-body-space">
+      </div>
+    </div>
+  </div>
+</div>
 <br>
-<footer class="text-muted"> <div class="container"> <p class="float-right"> <a href="#">Back to top</a> </p> ${UI.credit ? '<p>Bought to you with <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="red" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" /> </svg> by <a href="https://github.com/Rejected-Peice" target="_blank">Rejected Peice</a>.</p>' : ''} <p>© ${UI.copyright_year} - <a href=" ${UI.company_link}" target="_blank"> ${UI.company_name}</a>, All Rights Reserved.</p> </div> </footer>
+<footer class="footer text-muted"> <div class="container"> <p class="float-right"> <a href="#">Back to top</a> </p> ${UI.credit ? '<p>Redesigned with <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="red" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" /> </svg> by <a href="https://github.com/Rejected-Peice" target="_blank">Rejected Peice</a>.</p>' : ''} <p>© ${UI.copyright_year} - <a href=" ${UI.company_link}" target="_blank"> ${UI.company_name}</a>, All Rights Reserved.</p> </div> </footer>
   `;
     $('body').html(html);
 }
@@ -83,7 +95,7 @@ function nav(path) {
     var model = window.MODEL;
     var html = "";
     var cur = window.current_drive_order || 0;
-    html += `<nav class="navbar navbar-expand-lg ${UI.dark_mode ? 'navbar-dark bg-dark' : 'navbar-light bg-light'}">
+    html += `<nav class="navbar navbar-expand-lg fixed-top ${UI.dark_mode ? 'navbar-dark bg-dark' : 'navbar-light bg-light'}">
   <a class="navbar-brand" href="/${cur}:/">${UI.logo_image ? '<img border="0" alt="'+UI.company_name+'" src="'+UI.logo_link_name+'" height="'+UI.height+'" width="'+UI.logo_width+'">' : UI.logo_link_name}</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -96,12 +108,6 @@ function nav(path) {
       </li>`;
     var names = window.drive_names;
     var drive_name = window.drive_names[cur];
-    /*html += `<button class="mdui-btn mdui-btn-raised" mdui-menu="{target: '#drive-names'}"><i class="mdui-icon mdui-icon-left material-icons">share</i> ${names[cur]}</button>`;
-    html += `<ul class="mdui-menu" id="drive-names" style="transform-origin: 0px 0px; position: fixed;">`;
-    names.forEach((name, idx) => {
-        html += `<li class="mdui-menu-item ${(idx === cur) ? 'mdui-list-item-active' : ''} "><a href="/${idx}:/" class="mdui-ripple">${name}</a></li>`;
-    });
-    html += `</ul>`;*/
 
     // Dropdown to select different drive roots.
     html += `<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${drive_name}</a><div class="dropdown-menu" aria-labelledby="navbarDropdown">`;
@@ -121,13 +127,13 @@ function nav(path) {
                 var n = arr[i];
                 n = decodeURI(n);
                 p += n + '/';
-                if (p.endsWith(".mp3/") === true || p.endsWith(".mp4/") === true || p.endsWith(".mkv/") === true || p.endsWith(".flac/") === true || p.endsWith(".m4a/") === true || p.endsWith(".pdf/") === true || p.endsWith(".jpg/") === true || p.endsWith(".png/") === true || p.endsWith(".jpeg/") === true || p.endsWith(".gif/") === true || p.endsWith(".md/") === true || p.endsWith(".zip/") === true || p.endsWith(".rar/") === true || p.endsWith(".exe/") === true || p.endsWith(".tar/") === true) {
+                if (p.endsWith(".mp3/") === true || p.endsWith(".mp4/") === true || p.endsWith(".mkv/") === true || p.endsWith(".flac/") === true || p.endsWith(".m4a/") === true || p.endsWith(".pdf/") === true || p.endsWith(".jpg/") === true || p.endsWith(".png/") === true || p.endsWith(".jpeg/") === true || p.endsWith(".gif/") === true || p.endsWith(".md/") === true || p.endsWith(".zip/") === true || p.endsWith(".rar/") === true || p.endsWith(".exe/") === true || p.endsWith(".tar/") === true || p.endsWith(".txt/") === true) {
                     p = p.slice(0, -1);
                 }
                 if (n === '') {
                     break;
                 }
-                html += `<a class="dropdown-item"  href="/${cur}:${p}">> ${n}</a>`;
+                html += `<a class="dropdown-item"  href="${p}">> ${n}</a>`;
             }
         }
     }
@@ -142,7 +148,7 @@ function nav(path) {
 </ul>
 <form class="form-inline my-2 my-lg-0" method="get" action="/${cur}:search">
 <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search" value="${search_text}" required>
-<button class="btn ${UI.dark_mode ? 'btn-secondary' : 'btn-outline-success'} my-2 my-sm-0" onclick="if($('#search_bar').hasClass('mdui-textfield-expanded') && $('#search_bar_form>input').val()) $('#search_bar_form').submit();" type="submit">Search</button>
+<button class="btn ${UI.dark_mode ? 'btn-secondary' : 'btn-outline-success'} my-2 my-sm-0" onclick="if($('#search_bar_form>input').val()) $('#search_bar_form').submit();" type="submit">Search</button>
 </form>
 </div>
 </nav>
@@ -155,8 +161,6 @@ function nav(path) {
     }
 
     $('#nav').html(html);
-    mdui.mutation();
-    mdui.updateTextFields();
 }
 
 /**
@@ -215,6 +219,7 @@ function list(path) {
   <div class="card">
   <div id="readme_md" style="display:none; padding: 20px 20px;"></div>
   </div>
+	  <div class="alert alert-secondary text-center d-none" role="alert" id="count">Total <span class="number text-center"></span> items</div>
   </div>
   `;
     $('#content').html(content);
@@ -269,8 +274,6 @@ function list(path) {
                         // Show a loading spinner
                         $(`<div id="spinner" class="d-flex justify-content-center"><div class="spinner-border m-5 text-primary" role="status"><span class="sr-only">Loading...</span></div></div>`)
                             .insertBefore('#readme_md');
-                        mdui.updateSpinners();
-                        // mdui.mutation();
 
                         let $list = $('#list');
                         requestListPath(path, {
@@ -404,7 +407,7 @@ function append_files_to_list(path, files) {
     $list.html(($list.data('curPageIndex') == '0' ? '' : $list.html()) + html);
     // When it is the last page, count and display the total number of items
     if (is_lastpage_loaded) {
-        $('#count').removeClass('mdui-hidden').find('.number').text($list.find('li.mdui-list-item').length);
+        $('#count').removeClass('d-none').find('.number').text($list.find('a.list-group-item-action').length);
     }
 }
 
@@ -422,6 +425,7 @@ function render_search_result_list() {
   <div class="card">
   <div id="readme_md" style="display:none; padding: 20px 20px;"></div>
   </div>
+  <div class="alert alert-secondary text-center" role="alert" id="count">Total <span class="number text-center"></span> items</div>
   </div>
   `;
     $('#content').html(content);
@@ -475,8 +479,6 @@ function render_search_result_list() {
                         // Show a loading spinner
                         $(`<div id="spinner" class="d-flex justify-content-center"><div class="spinner-border m-5 text-primary" role="status"><span class="sr-only">Loading...</span></div></div>`)
                             .insertBefore('#readme_md');
-                        mdui.updateSpinners();
-                        // mdui.mutation();
 
                         let $list = $('#list');
                         requestSearch({
@@ -528,7 +530,7 @@ function append_search_result_to_list(files) {
         item['modifiedTime'] = utc2beijing(item['modifiedTime']);
         item['size'] = formatFileSize(item['size']);
         if (item['mimeType'] == 'application/vnd.google-apps.folder') {
-            html += `<a onclick="onSearchResultItemClick(this)" id="${item['id']}" class="list-group-item ${UI.dark_mode ? 'list-group-item-action' : 'btn-outline-secondary'}"><svg width="1.5em" height="1.5em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><linearGradient id="WQEfvoQAcpQgQgyjQQ4Hqa" x1="24" x2="24" y1="6.708" y2="14.977" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#eba600"></stop><stop offset="1" stop-color="#c28200"></stop></linearGradient><path fill="url(#WQEfvoQAcpQgQgyjQQ4Hqa)" d="M24.414,10.414l-2.536-2.536C21.316,7.316,20.553,7,19.757,7L5,7C3.895,7,3,7.895,3,9l0,30	c0,1.105,0.895,2,2,2l38,0c1.105,0,2-0.895,2-2V13c0-1.105-0.895-2-2-2l-17.172,0C25.298,11,24.789,10.789,24.414,10.414z"></path><linearGradient id="WQEfvoQAcpQgQgyjQQ4Hqb" x1="24" x2="24" y1="10.854" y2="40.983" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd869"></stop><stop offset="1" stop-color="#fec52b"></stop></linearGradient><path fill="url(#WQEfvoQAcpQgQgyjQQ4Hqb)" d="M21.586,14.414l3.268-3.268C24.947,11.053,25.074,11,25.207,11H43c1.105,0,2,0.895,2,2v26	c0,1.105-0.895,2-2,2H5c-1.105,0-2-0.895-2-2V15.5C3,15.224,3.224,15,3.5,15h16.672C20.702,15,21.211,14.789,21.586,14.414z"></path></svg> ${item.name}<span class="badge-info badge-pill float-right csize"> ${item['size']}</span><span class="badge-primary badge-pill float-right cmtime">${item['modifiedTime']}</span></a>`;
+            html += `<a onclick="onSearchResultItemClick(this)" data-toggle="modal" data-target="#staticBackdrop" id="${item['id']}" class="list-group-item ${UI.dark_mode ? 'list-group-item-action' : 'btn-outline-secondary'}"><svg width="1.5em" height="1.5em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><linearGradient id="WQEfvoQAcpQgQgyjQQ4Hqa" x1="24" x2="24" y1="6.708" y2="14.977" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#eba600"></stop><stop offset="1" stop-color="#c28200"></stop></linearGradient><path fill="url(#WQEfvoQAcpQgQgyjQQ4Hqa)" d="M24.414,10.414l-2.536-2.536C21.316,7.316,20.553,7,19.757,7L5,7C3.895,7,3,7.895,3,9l0,30	c0,1.105,0.895,2,2,2l38,0c1.105,0,2-0.895,2-2V13c0-1.105-0.895-2-2-2l-17.172,0C25.298,11,24.789,10.789,24.414,10.414z"></path><linearGradient id="WQEfvoQAcpQgQgyjQQ4Hqb" x1="24" x2="24" y1="10.854" y2="40.983" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd869"></stop><stop offset="1" stop-color="#fec52b"></stop></linearGradient><path fill="url(#WQEfvoQAcpQgQgyjQQ4Hqb)" d="M21.586,14.414l3.268-3.268C24.947,11.053,25.074,11,25.207,11H43c1.105,0,2,0.895,2,2v26	c0,1.105-0.895,2-2,2H5c-1.105,0-2-0.895-2-2V15.5C3,15.224,3.224,15,3.5,15h16.672C20.702,15,21.211,14.789,21.586,14.414z"></path></svg> ${item.name}<span class="badge-info badge-pill float-right csize"> ${item['size']}</span><span class="badge-primary badge-pill float-right cmtime">${item['modifiedTime']}</span></a>`;
         } else {
             var p = '/' + cur + ':/' + item.name;
             var c = "file";
@@ -537,7 +539,7 @@ function append_search_result_to_list(files) {
                 p += "?a=view";
                 c += " view";
             }
-            html += `<a onclick="onSearchResultItemClick(this)" id="${item['id']}" gd-type="${item.mimeType}" class="list-group-item ${UI.dark_mode ? 'list-group-item-action' : 'btn-outline-secondary'}"><svg width="1.5em" height="1.5em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#50e6ff" d="M39,16v25c0,1.105-0.895,2-2,2H11c-1.105,0-2-0.895-2-2V7c0-1.105,0.895-2,2-2h17L39,16z"></path><linearGradient id="F8F33TU9HxDNWNbQYRyY3a" x1="28.529" x2="33.6" y1="15.472" y2="10.4" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3079d6"></stop><stop offset="1" stop-color="#297cd2"></stop></linearGradient><path fill="url(#F8F33TU9HxDNWNbQYRyY3a)" d="M28,5v9c0,1.105,0.895,2,2,2h9L28,5z"></path></svg> ${item.name}<span class="badge-info badge-pill float-right csize"> ${item['size']}</span><span class="badge-primary badge-pill float-right cmtime">${item['modifiedTime']}</span></a>`;
+            html += `<a onclick="onSearchResultItemClick(this)" data-toggle="modal" data-target="#staticBackdrop" id="${item['id']}" gd-type="${item.mimeType}" class="list-group-item ${UI.dark_mode ? 'list-group-item-action' : 'btn-outline-secondary'}"><svg width="1.5em" height="1.5em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#50e6ff" d="M39,16v25c0,1.105-0.895,2-2,2H11c-1.105,0-2-0.895-2-2V7c0-1.105,0.895-2,2-2h17L39,16z"></path><linearGradient id="F8F33TU9HxDNWNbQYRyY3a" x1="28.529" x2="33.6" y1="15.472" y2="10.4" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3079d6"></stop><stop offset="1" stop-color="#297cd2"></stop></linearGradient><path fill="url(#F8F33TU9HxDNWNbQYRyY3a)" d="M28,5v9c0,1.105,0.895,2,2,2h9L28,5z"></path></svg> ${item.name}<span class="badge-info badge-pill float-right csize"> ${item['size']}</span><span class="badge-primary badge-pill float-right cmtime">${item['modifiedTime']}</span></a>`;
         }
     }
 
@@ -545,7 +547,7 @@ function append_search_result_to_list(files) {
     $list.html(($list.data('curPageIndex') == '0' ? '' : $list.html()) + html);
     // When it is the last page, count and display the total number of items
     if (is_lastpage_loaded) {
-        $('#count').removeClass('mdui-hidden').find('.number').text($list.find('li.mdui-list-item').length);
+        $('#count').removeClass('d-none').find('.number').text($list.find('a.list-group-item').length);
     }
 }
 
@@ -557,51 +559,46 @@ function onSearchResultItemClick(a_ele) {
     var me = $(a_ele);
     var can_preview = me.hasClass('view');
     var cur = window.current_drive_order;
-    var dialog = mdui.dialog({
-        title: '',
-        content: '<div class="mdui-text-center mdui-typo-title mdui-m-b-1"><svg width="1.5em" height="1.5em" id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg"><g><path d="m347.286 203.876c-221.19-75.589-72.046-166.142 3.02-201.853 1.026-.487.677-2.023-.459-2.023h-53.55c-8.469 0-16.838 1.96-24.582 5.745-85.039 41.566-256.502 142.695-117.98 227.51 158.851 97.261-11.45 224.267-100.575 278.745h349.478c46.736-66.708 143.573-240.144-55.352-308.124z" fill="#665e68"/><path d="m53.16 512h76.776c91.568-63.118 231.714-188.068 82.869-285.189-124.238-81.064.874-176.113 89.349-226.811h-5.857c-8.469 0-16.838 1.96-24.582 5.745-85.039 41.566-256.502 142.695-117.98 227.51 158.851 97.261-11.45 224.267-100.575 278.745z" fill="#554e56"/><g><path d="m217.804 71.339c-2.519 0-4.988-1.229-6.473-3.493-2.342-3.571-1.346-8.364 2.226-10.706 3.419-2.242 5.57-3.471 5.659-3.522 3.71-2.115 8.433-.82 10.546 2.891 2.113 3.709.82 8.428-2.887 10.543-.051.029-1.892 1.087-4.838 3.019-1.307.858-2.778 1.267-4.233 1.268z" fill="#dfebfa"/></g><g fill="#dfebfa"><path d="m291.42 441.935c-1.882 0-3.768-.683-5.257-2.064-3.131-2.904-3.314-7.797-.409-10.927 2.814-3.033 5.559-6.119 8.16-9.173 2.77-3.251 7.65-3.642 10.9-.872 3.251 2.769 3.642 7.649.872 10.9-2.742 3.219-5.634 6.47-8.596 9.663-1.523 1.642-3.594 2.473-5.67 2.473z"/><path d="m324.191 398.39c-1.307 0-2.632-.332-3.846-1.03-3.703-2.128-4.978-6.855-2.85-10.557 2.045-3.559 3.931-7.135 5.603-10.63 1.843-3.852 6.46-5.481 10.312-3.638 3.853 1.843 5.481 6.46 3.638 10.312-1.84 3.845-3.907 7.77-6.147 11.663-1.43 2.487-4.033 3.88-6.71 3.88z"/><path d="m341.594 347.113c-.205 0-.412-.008-.62-.025-4.257-.338-7.435-4.062-7.097-8.319.166-2.085.249-4.179.249-6.225.001-1.739-.06-3.49-.18-5.204-.299-4.26 2.913-7.955 7.172-8.254 4.25-.302 7.955 2.912 8.254 7.172.145 2.074.219 4.189.218 6.288 0 2.45-.1 4.956-.298 7.445-.32 4.049-3.705 7.122-7.698 7.122z"/><path d="m328.086 295.326c-2.508 0-4.969-1.219-6.457-3.468-2.069-3.129-4.429-6.244-7.016-9.259-2.78-3.241-2.407-8.122.834-10.903s8.122-2.408 10.903.834c3.004 3.501 5.755 7.134 8.178 10.797 2.355 3.562 1.378 8.359-2.184 10.715-1.313.869-2.794 1.284-4.258 1.284z"/><path d="m288.565 258.262c-1.436 0-2.888-.399-4.183-1.235-3.293-2.124-6.791-4.234-10.396-6.272-3.718-2.101-5.027-6.819-2.926-10.536 2.101-3.718 6.819-5.027 10.536-2.926 3.865 2.185 7.622 4.452 11.166 6.737 3.589 2.315 4.622 7.1 2.308 10.689-1.478 2.293-3.966 3.543-6.505 3.543z"/><path d="m240.155 233.18c-1.176 0-2.369-.269-3.49-.837-3.918-1.986-7.749-4.019-11.385-6.041-3.732-2.076-5.075-6.784-2.999-10.516 2.076-3.733 6.783-5.077 10.516-2.999 3.464 1.927 7.118 3.865 10.86 5.762 3.809 1.931 5.332 6.584 3.401 10.393-1.362 2.688-4.082 4.238-6.903 4.238z"/><path d="m194.337 203.784c-1.774 0-3.556-.607-5.012-1.847-3.501-2.984-6.776-6.045-9.733-9.097-2.972-3.067-2.894-7.962.174-10.933 3.068-2.972 7.962-2.893 10.933.174 2.616 2.7 5.529 5.422 8.657 8.088 3.25 2.77 3.64 7.65.869 10.9-1.529 1.792-3.702 2.715-5.888 2.715z"/><path d="m164.402 159.356c-3.578 0-6.79-2.497-7.558-6.138-.88-4.172-1.326-8.433-1.326-12.664-.001-.547.007-1.099.022-1.651.117-4.269 3.684-7.617 7.941-7.518 4.269.117 7.635 3.672 7.518 7.941-.011.406-.017.812-.016 1.22 0 3.168.334 6.355.993 9.48.881 4.178-1.791 8.28-5.97 9.161-.539.115-1.076.169-1.604.169z"/><path d="m177.873 108.162c-1.572 0-3.158-.478-4.528-1.47-3.459-2.504-4.233-7.339-1.728-10.797 2.524-3.486 5.372-6.991 8.465-10.417 2.86-3.169 7.749-3.422 10.921-.559 3.17 2.861 3.42 7.75.559 10.921-2.722 3.016-5.218 6.086-7.419 9.125-1.512 2.088-3.874 3.197-6.27 3.197z"/></g><g><path d="m256.006 474.787c-2.336 0-4.644-1.054-6.165-3.059-2.581-3.402-1.916-8.252 1.486-10.834.014-.011 1.714-1.305 4.569-3.666 3.291-2.722 8.166-2.26 10.886 1.03 2.722 3.291 2.26 8.165-1.03 10.886-3.133 2.592-4.999 4.01-5.077 4.069-1.398 1.061-3.04 1.574-4.669 1.574z" fill="#dfebfa"/></g><path d="m364.982 185.337c-210.789-65.146-89.169-139.33-11.125-177.542 3.647-1.785 2.486-7.795-1.503-7.795h-2.9c-73.415 34.202-232.815 126.815-7.318 203.876 198.923 67.98 102.087 241.416 55.351 308.124h39.609c9.916 0 19.026-6.013 23.71-15.659 44.904-92.457 86.811-254.559-95.824-311.004z" fill="#ffd301"/><g><g><path d="m155.795 233.255c-102.413-62.706-37.443-134.33 38.828-184.208-85.326 47.849-183.183 126.492-68.476 196.724 134.351 82.261-6.581 185.797-109.257 248.736-7.628 4.677-4.608 17.493 4.119 17.493h34.211c89.126-54.478 259.427-181.484 100.575-278.745z" fill="#ffc20c"/></g></g></g></svg> Getting target path...</div><div class="d-flex justify-content-center"><div class="spinner-border m-5 text-primary" role="status"><span class="sr-only">Loading...</span></div></div>',
-        // content: '<div class="mdui-spinner mdui-spinner-colorful mdui-center"></div>',
-        history: false,
-        modal: true,
-        closeOnEsc: true
-    });
-    mdui.updateSpinners();
+    var title = `Loading...`;
+    $('#staticBackdropLabel').html(title);
+    var content = `<div class="d-flex justify-content-center"><div class="spinner-border m-5 text-primary" role="status"><span class="sr-only">Loading...</span></div>`;
+    $('#modal-body-space').html(content);
 
     // Request a path
     $.post(`/${cur}:id2path`, {
         id: a_ele.id
     }, function(data) {
         if (data) {
-            dialog.close();
             var href = `/${cur}:${data}${can_preview ? '?a=view' : ''}`;
             if (href.endsWith("/")) {
                 hrefurl = href;
             } else {
                 hrefurl = href + '?a=view';
             }
-            dialog = mdui.dialog({
-                title: '<svg width="1em" height="1em" id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg"><g><path d="m347.286 203.876c-221.19-75.589-72.046-166.142 3.02-201.853 1.026-.487.677-2.023-.459-2.023h-53.55c-8.469 0-16.838 1.96-24.582 5.745-85.039 41.566-256.502 142.695-117.98 227.51 158.851 97.261-11.45 224.267-100.575 278.745h349.478c46.736-66.708 143.573-240.144-55.352-308.124z" fill="#665e68"/><path d="m53.16 512h76.776c91.568-63.118 231.714-188.068 82.869-285.189-124.238-81.064.874-176.113 89.349-226.811h-5.857c-8.469 0-16.838 1.96-24.582 5.745-85.039 41.566-256.502 142.695-117.98 227.51 158.851 97.261-11.45 224.267-100.575 278.745z" fill="#554e56"/><g><path d="m217.804 71.339c-2.519 0-4.988-1.229-6.473-3.493-2.342-3.571-1.346-8.364 2.226-10.706 3.419-2.242 5.57-3.471 5.659-3.522 3.71-2.115 8.433-.82 10.546 2.891 2.113 3.709.82 8.428-2.887 10.543-.051.029-1.892 1.087-4.838 3.019-1.307.858-2.778 1.267-4.233 1.268z" fill="#dfebfa"/></g><g fill="#dfebfa"><path d="m291.42 441.935c-1.882 0-3.768-.683-5.257-2.064-3.131-2.904-3.314-7.797-.409-10.927 2.814-3.033 5.559-6.119 8.16-9.173 2.77-3.251 7.65-3.642 10.9-.872 3.251 2.769 3.642 7.649.872 10.9-2.742 3.219-5.634 6.47-8.596 9.663-1.523 1.642-3.594 2.473-5.67 2.473z"/><path d="m324.191 398.39c-1.307 0-2.632-.332-3.846-1.03-3.703-2.128-4.978-6.855-2.85-10.557 2.045-3.559 3.931-7.135 5.603-10.63 1.843-3.852 6.46-5.481 10.312-3.638 3.853 1.843 5.481 6.46 3.638 10.312-1.84 3.845-3.907 7.77-6.147 11.663-1.43 2.487-4.033 3.88-6.71 3.88z"/><path d="m341.594 347.113c-.205 0-.412-.008-.62-.025-4.257-.338-7.435-4.062-7.097-8.319.166-2.085.249-4.179.249-6.225.001-1.739-.06-3.49-.18-5.204-.299-4.26 2.913-7.955 7.172-8.254 4.25-.302 7.955 2.912 8.254 7.172.145 2.074.219 4.189.218 6.288 0 2.45-.1 4.956-.298 7.445-.32 4.049-3.705 7.122-7.698 7.122z"/><path d="m328.086 295.326c-2.508 0-4.969-1.219-6.457-3.468-2.069-3.129-4.429-6.244-7.016-9.259-2.78-3.241-2.407-8.122.834-10.903s8.122-2.408 10.903.834c3.004 3.501 5.755 7.134 8.178 10.797 2.355 3.562 1.378 8.359-2.184 10.715-1.313.869-2.794 1.284-4.258 1.284z"/><path d="m288.565 258.262c-1.436 0-2.888-.399-4.183-1.235-3.293-2.124-6.791-4.234-10.396-6.272-3.718-2.101-5.027-6.819-2.926-10.536 2.101-3.718 6.819-5.027 10.536-2.926 3.865 2.185 7.622 4.452 11.166 6.737 3.589 2.315 4.622 7.1 2.308 10.689-1.478 2.293-3.966 3.543-6.505 3.543z"/><path d="m240.155 233.18c-1.176 0-2.369-.269-3.49-.837-3.918-1.986-7.749-4.019-11.385-6.041-3.732-2.076-5.075-6.784-2.999-10.516 2.076-3.733 6.783-5.077 10.516-2.999 3.464 1.927 7.118 3.865 10.86 5.762 3.809 1.931 5.332 6.584 3.401 10.393-1.362 2.688-4.082 4.238-6.903 4.238z"/><path d="m194.337 203.784c-1.774 0-3.556-.607-5.012-1.847-3.501-2.984-6.776-6.045-9.733-9.097-2.972-3.067-2.894-7.962.174-10.933 3.068-2.972 7.962-2.893 10.933.174 2.616 2.7 5.529 5.422 8.657 8.088 3.25 2.77 3.64 7.65.869 10.9-1.529 1.792-3.702 2.715-5.888 2.715z"/><path d="m164.402 159.356c-3.578 0-6.79-2.497-7.558-6.138-.88-4.172-1.326-8.433-1.326-12.664-.001-.547.007-1.099.022-1.651.117-4.269 3.684-7.617 7.941-7.518 4.269.117 7.635 3.672 7.518 7.941-.011.406-.017.812-.016 1.22 0 3.168.334 6.355.993 9.48.881 4.178-1.791 8.28-5.97 9.161-.539.115-1.076.169-1.604.169z"/><path d="m177.873 108.162c-1.572 0-3.158-.478-4.528-1.47-3.459-2.504-4.233-7.339-1.728-10.797 2.524-3.486 5.372-6.991 8.465-10.417 2.86-3.169 7.749-3.422 10.921-.559 3.17 2.861 3.42 7.75.559 10.921-2.722 3.016-5.218 6.086-7.419 9.125-1.512 2.088-3.874 3.197-6.27 3.197z"/></g><g><path d="m256.006 474.787c-2.336 0-4.644-1.054-6.165-3.059-2.581-3.402-1.916-8.252 1.486-10.834.014-.011 1.714-1.305 4.569-3.666 3.291-2.722 8.166-2.26 10.886 1.03 2.722 3.291 2.26 8.165-1.03 10.886-3.133 2.592-4.999 4.01-5.077 4.069-1.398 1.061-3.04 1.574-4.669 1.574z" fill="#dfebfa"/></g><path d="m364.982 185.337c-210.789-65.146-89.169-139.33-11.125-177.542 3.647-1.785 2.486-7.795-1.503-7.795h-2.9c-73.415 34.202-232.815 126.815-7.318 203.876 198.923 67.98 102.087 241.416 55.351 308.124h39.609c9.916 0 19.026-6.013 23.71-15.659 44.904-92.457 86.811-254.559-95.824-311.004z" fill="#ffd301"/><g><g><path d="m155.795 233.255c-102.413-62.706-37.443-134.33 38.828-184.208-85.326 47.849-183.183 126.492-68.476 196.724 134.351 82.261-6.581 185.797-109.257 248.736-7.628 4.677-4.608 17.493 4.119 17.493h34.211c89.126-54.478 259.427-181.484 100.575-278.745z" fill="#ffc20c"/></g></g></g></svg> Target path',
-                content: `<a class="btn btn-info" href="${hrefurl}">Open</a> <a class="btn btn-secondary" href="${hrefurl}" target="_blank">Open in New Tab</a> <button class="btn btn-danger" mdui-dialog-cancel>cancel</button><script>dialog.addEventListener('cancel.mdui.dialog', function () {
-  console.log('cancel');
-});</script>`,
-                history: false,
-                modal: true,
-                closeOnEsc: true
-            });
+            title = `Result`;
+            $('#staticBackdropLabel').html(title);
+            content = `<a class="btn btn-info" href="${hrefurl}">Open</a> <a class="btn btn-secondary" href="${hrefurl}" target="_blank">Open in New Tab</a> <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>`;
+            $('#modal-body-space').html(content);
             return;
         }
-        dialog.close();
-        dialog = mdui.dialog({
-            title: 'Failed to get the target path',
-            content: 'It may be because this item does not exist in the disc! It may also be because the file [Shared with me] has not been added to Personal Drive!',
-            history: false,
-            modal: true,
-            closeOnEsc: true,
-            buttons: [{
-                text: 'WTF ???'
-            }]
-        });
+        title = `Failed`;
+        $('#staticBackdropLabel').html(title);
+        content = `System Failed to Fetch the File/Folder Link, Please close and try agin.`;
+        $('#modal-body-space').html(content);
     })
+}
+
+function get_file(path, file, callback) {
+    var key = "file_path_" + path + file['modifiedTime'];
+    var data = localStorage.getItem(key);
+    if (data != undefined) {
+        return callback(data);
+    } else {
+        $.get(path, function(d) {
+            localStorage.setItem(key, d);
+            callback(d);
+        });
+    }
 }
 
 function get_file(path, file, callback) {
@@ -640,11 +637,13 @@ function file(path) {
 
     if ("|bmp|jpg|jpeg|png|gif|".indexOf(`|${ext}|`) >= 0) {
         return file_image(path);
+    }
+
+    if ('pdf' === ext) {
+        return file_pdf(path);
     } else {
         return file_others(path);
     }
-
-    if ('pdf' === ext) return file_pdf(path);
 }
 
 // Document display |zip|.exe/others direct downloads
@@ -663,7 +662,14 @@ function file_others(path) {
 <div class="card-body">
   <div class="alert alert-danger" id="folderne" role="alert"></div><script>document.getElementById("folderne").innerHTML=decodeURI(this.window.location.href.substring(window.location.href.lastIndexOf('/',window.location.href.lastIndexOf('/')+1))).replace('/','').replace('?a=view','');</script>
 </div>
-<p class="card-text text-center"><a href="${href}" class="btn btn-primary">Download</a></p><br>`;
+<div class="card-body">
+<div class="input-group mb-4">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="">Full URL</span>
+  </div>
+  <input type="text" class="form-control" id="dlurl" value="${href}">
+</div>
+	<p class="card-text text-center"><a href="${href}" class="btn btn-primary">Download</a> <button onclick="copyFunction()" onmouseout="outFunc()" class="btn btn-success"> <span class="tooltiptext" id="myTooltip">Copy</span> </button></p><br></div>`;
     $('#content').html(content);
 }
 
@@ -689,9 +695,20 @@ function file_code(path) {
 <div class="card">
 <div class="card-body">
   <div class="alert alert-danger" id="folderne" role="alert"></div><script>document.getElementById("folderne").innerHTML=decodeURI(this.window.location.href.substring(window.location.href.lastIndexOf('/',window.location.href.lastIndexOf('/')+1))).replace('/','').replace('?a=view','');</script>
-<code id="editor" class="card-text"></code>
+<div>
+<pre id="editor" ></pre>
 </div>
-<p class="card-text text-center"><a href="${href}" class="btn btn-primary">Download</a></p><br>`;
+</div>
+<div class="card-body">
+<div class="input-group mb-4">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="">Full URL</span>
+  </div>
+  <input type="text" class="form-control" id="dlurl" value="${href}">
+</div>
+	<p class="card-text text-center"><a href="${href}" class="btn btn-primary">Download</a> <button onclick="copyFunction()" onmouseout="outFunc()" class="btn btn-success"> <span class="tooltiptext" id="myTooltip">Copy</span> </button></p><br></div>
+<script src="https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@master/js/ace/1.4.7/ace.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Rejected-Peice/Gdrive-Indexer@master/js/ace/1.4.7/ext-language_tools.js"></script>`;
     $('#content').html(content);
 
     $.get(path, function(data) {
@@ -703,27 +720,50 @@ function file_code(path) {
     });
 }
 
-function copyToClipboard(str) {
-    const $temp = $("<input>");
-    $("body").append($temp);
-    $temp.val(str).select();
-    document.execCommand("copy");
-    $temp.remove();
-}
-
 // Document display video |mp4|webm|avi|
 function file_video(path) {
+    const name = path.split('/').pop();
+    const caption = name.slice(0, name.lastIndexOf('.')) + '.srt'
     const url = window.location.origin + path;
     const content = `
-  <div class="container"><br>
-  <div class="card">
-  <div class="card-body text-center">
+  <div class="container text-center"><br>
+  <div class="card text-center">
+  <div class="text-center">
   <div class="alert alert-danger" id="folderne" role="alert"></div><script>document.getElementById("folderne").innerHTML=decodeURI(this.window.location.href.substring(window.location.href.lastIndexOf('/',window.location.href.lastIndexOf('/')+1))).replace('/','').replace('?a=view','');</script>
-  <video width="100%" height="100%" id="bPlayer" controls><source type="video/mp4" src="${url}"/></video>
+	<video id="vplayer" width="100%" height="100%" playsinline controls data-poster="${UI.poster}">
+	  <source src="${url}" type="video/mp4" />
+	  <source src="${url}" type="video/webm" />
+	  <track kind="captions" label="English Captions" src="${caption}" srclang="en" default />
+	</video>
   </div>
-	${UI.disable_player ? '<style>#mep_0{display:none;}</style>' : ''}
-  <script type="text/javascript">$('#bPlayer').mediaelementplayer();</script>
-  <p class="card-text text-center"><a href="${url}" class="btn btn-primary">Download</a></p><br>
+	${UI.disable_player ? '<style>.plyr{display:none;}</style>' : ''}
+  <script>
+   const player = new Plyr('#vplayer');
+  </script></br>
+<div class="card-body">
+<div class="input-group mb-4">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="">Full URL</span>
+  </div>
+  <input type="text" class="form-control" id="dlurl" value="${url}">
+</div>
+<div class="btn-group text-center">
+    <a href="${url}" type="button" class="btn btn-primary">Download</a>
+    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only"></span>
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="iina://weblink?url=${url}">IINA</a>
+      <a class="dropdown-item" href="potplayer://${url}">PotPlayer</a>
+      <a class="dropdown-item" href="vlc://${url}">VLC</a>
+      <a class="dropdown-item" href="nplayer-${url}">nPlayer</a>
+      <a class="dropdown-item" href="intent:${url}#Intent;package=com.mxtech.videoplayer.ad;S.title=undefined;end">MX Player (Free)</a>
+      <a class="dropdown-item" href="intent:${url}#Intent;package=com.mxtech.videoplayer.pro;S.title=undefined;end">MX Player (Pro)</a>
+    </div>
+</div>
+<button onclick="copyFunction()" onmouseout="outFunc()" class="btn btn-success"> <span class="tooltiptext" id="myTooltip">Copy</span> </button>
+<br>
+  </div>
   </div>
   </div>
   `;
@@ -735,25 +775,36 @@ function file_audio(path) {
     var url = window.location.origin + path;
     var content = `
   <div class="container"><br>
-  <div class="card">
+  <div class="card" style="background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);">
   <div class="card-body text-center">
   <div class="alert alert-danger" id="folderne" role="alert"></div><script>document.getElementById("folderne").innerHTML=decodeURI(this.window.location.href.substring(window.location.href.lastIndexOf('/',window.location.href.lastIndexOf('/')+1))).replace('/','').replace('?a=view','');</script>
-  <audio id="bPlayer" width="100%" controls>
+  <br><img draggable="false" src="${UI.audioposter}" width="100%" /><br>
+  <audio id="vplayer" width="100%" playsinline controls>
     <source src="${url}" type="audio/ogg">
     <source src="${url}" type="audio/mpeg">
   Your browser does not support the audio element.
   </audio>
   </div>
-	${UI.disable_player ? '<style>#mep_0{display:none;}</style>' : ''}
-  <script type="text/javascript">$('#bPlayer').mediaelementplayer();</script>
-  <p class="card-text text-center"><a href="${url}" class="btn btn-primary">Download</a></p><br>
+	${UI.disable_player ? '<style>.plyr{display:none;}</style>' : ''}
+  <script>
+   const player = new Plyr('#vplayer');
+  </script></br>
+  <div class="card-body">
+  <div class="input-group mb-4">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="">Full URL</span>
+  </div>
+  <input type="text" class="form-control" id="dlurl" value="${url}">
+</div>
+	<p class="card-text text-center"><a href="${url}" class="btn btn-primary">Download</a> <button onclick="copyFunction()" onmouseout="outFunc()" class="btn btn-success"> <span class="tooltiptext" id="myTooltip">Copy</span> </button></p><br>
+  </div>
   </div>
   </div>
   `;
     $('#content').html(content);
 }
 
-// Document display pdf  pdf
+// Document display pdf
 function file_pdf(path) {
     const url = window.location.origin + path;
     const inline_url = `${url}?inline=true`
@@ -765,13 +816,19 @@ function file_pdf(path) {
   <div class="alert alert-danger" id="folderne" role="alert"></div><script>document.getElementById("folderne").innerHTML=decodeURI(this.window.location.href.substring(window.location.href.lastIndexOf('/',window.location.href.lastIndexOf('/')+1))).replace('/','').replace('?a=view','');</script>
   <object data="${inline_url}" type="application/pdf" name="${file_name}" style="width:100%;height:94vh;"><embed src="${inline_url}" type="application/pdf"/></object>
   </div>
-  <p class="card-text text-center"><a href="${url}" class="btn btn-primary">Download</a></p><br>
+  <div class="card-body">
+<div class="input-group mb-4">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="">Full URL</span>
+  </div>
+  <input type="text" class="form-control" id="dlurl" value="${url}">
+</div>
+	<p class="card-text text-center"><a href="${url}" class="btn btn-primary">Download</a> <button onclick="copyFunction()" onmouseout="outFunc()" class="btn btn-success"> <span class="tooltiptext" id="myTooltip">Copy</span> </button></p><br>
+  </div>
   </div>
   </div>
   `;
-    $('#content').removeClass('mdui-container').addClass('mdui-container-fluid').css({
-        padding: 0
-    }).html(content);
+    $('#content').html(content);
 }
 
 // image display
@@ -797,10 +854,6 @@ function file_image(path) {
             console.error(e);
             target_children = [];
         }
-        // <div id="btns" >
-        //             ${targetObj[path].prev ? `<span id="leftBtn" data-direction="left" data-filepath="${targetObj[path].prev}"><i class="mdui-icon material-icons"></i><span style="margin-left: 10px;">Prev</span></span>` : `<span style="cursor: not-allowed;color: rgba(0,0,0,0.2);margin-bottom:20px;"><i class="mdui-icon material-icons"></i><span style="margin-left: 10px;">Prev</span></span>`}
-        //             ${targetObj[path].next ? `<span id="rightBtn" data-direction="right"  data-filepath="${targetObj[path].next}"><i class="mdui-icon material-icons"></i><span style="margin-left: 10px;">Next</span></span>` : `<span style="cursor: not-allowed;color: rgba(0,0,0,0.2);"><i class="mdui-icon material-icons"></i><span style="margin-left: 10px;">Prev</span></span>`}
-        // </div>
     }
     var content = `
   <div class="container"><br>
@@ -809,7 +862,15 @@ function file_image(path) {
   <div class="alert alert-danger" id="folderne" role="alert"></div><script>document.getElementById("folderne").innerHTML=decodeURI(this.window.location.href.substring(window.location.href.lastIndexOf('/',window.location.href.lastIndexOf('/')+1))).replace('/','').replace('?a=view','');</script>
   <img src="${url}" width="50%">
   </div>
-  <p class="card-text text-center"><a href="${url}" class="btn btn-primary">Download</a></p><br>
+  <div class="card-body">
+  <div class="input-group mb-4">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="">Full URL</span>
+  </div>
+  <input type="text" class="form-control" id="dlurl" value="${url}">
+</div>
+	<p class="card-text text-center"><a href="${url}" class="btn btn-primary">Download</a> <button onclick="copyFunction()" onmouseout="outFunc()" class="btn btn-success"> <span class="tooltiptext" id="myTooltip">Copy</span> </button></p><br>
+  </div>
   </div>
   </div>
     `;
@@ -924,3 +985,18 @@ $(function() {
 
     render(path);
 });
+
+// Copy to Clipboard for Direct Links, This will be modified soon with other UI
+function copyFunction() {
+    var copyText = document.getElementById("dlurl");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    var tooltip = document.getElementById("myTooltip");
+    tooltip.innerHTML = "Copied";
+}
+
+function outFunc() {
+    var tooltip = document.getElementById("myTooltip");
+    tooltip.innerHTML = "Copy";
+}
